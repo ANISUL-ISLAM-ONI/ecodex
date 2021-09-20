@@ -24,6 +24,8 @@ from django.contrib.sitemaps import views
 from django.urls import include, path
 from django.views.i18n import JavaScriptCatalog
 from oscar.views import handler403, handler404, handler500
+# import sslcommerz
+# import django_sslcommerz
 
 from apps.sitemaps import base_sitemaps
 
@@ -50,6 +52,8 @@ urlpatterns += i18n_patterns(
     path('', include(apps.get_app_config('oscar').urls[0])),
     path('dashboard/stores/', apps.get_app_config('stores_dashboard').urls),
     path('stores/', apps.get_app_config('stores').urls),
+    path('paymentgateway/', include('sslcommerz.urls')),
+    path('sslcommerz/', include('django_sslcommerz.urls')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 )
 

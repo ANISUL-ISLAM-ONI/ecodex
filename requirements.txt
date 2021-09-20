@@ -15,7 +15,7 @@ django-environ==0.4.5
 django-extensions==3.1.3
 django-extra-views==0.13.0
 django-haystack==3.1.1
--e git+https://github.com/django-oscar/django-oscar.git@fb195f17fb7a7ef69e08e52c7c8c8bd1f5ae1321#egg=django_oscar
+# -e git+https://github.com/django-oscar/django-oscar.git@fb195f17fb7a7ef69e08e52c7c8c8bd1f5ae1321#egg=django_oscar
 django-oscar-stores==3.0.1
 django-phonenumber-field==5.2.0
 django-redis==5.0.0
