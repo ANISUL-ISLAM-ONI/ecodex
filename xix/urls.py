@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-
 from django.apps import apps
 from django.conf import settings, urls
 from django.conf.urls.i18n import i18n_patterns
@@ -52,7 +51,6 @@ urlpatterns += i18n_patterns(
     path('', include(apps.get_app_config('oscar').urls[0])),
     path('dashboard/stores/', apps.get_app_config('stores_dashboard').urls),
     path('stores/', apps.get_app_config('stores').urls),
-    path('paymentgateway/', include('sslcommerz.urls')),
     path('sslcommerz/', include('django_sslcommerz.urls')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 )

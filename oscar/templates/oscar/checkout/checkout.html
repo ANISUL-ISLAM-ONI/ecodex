@@ -87,12 +87,18 @@
                 </div>
                 <div class="card card-body bg-light card card-body bg-light-success">
                     <h3>
-                      {% trans "Payment" %}
+		      {% trans "Payment with sslcommerz" %}
                       <a href="{% url 'checkout:payment-details' %}" class="float-right">
                         {% trans "Change" %}
                       </a>
                     </h3>
-                    <p>{% trans "Payment details to go here" %}</p>
+                    <p>
+		      {% trans "Payment details to go here" %}<br>
+		      {% trans "Total : xxx" %}<br>
+                      {% trans "Paid : xxx" %}<br>
+		      {{ basket.owner }}
+		      {{ ctx }}
+		    </p>
                 </div>
             </div>
         {% endblock payment_method %}

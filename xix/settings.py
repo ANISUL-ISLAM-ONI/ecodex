@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from oscar.defaults import *
+from django.urls import reverse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = 'django-insecure-j1d&gv_f5f3pp_#5j@%_!9#uhjl%kx9!b2%ze_iwp%rfg@my9s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',]
+ALLOWED_HOSTS = ['localhost', '*']
 
 
 # Application definition
@@ -76,7 +77,6 @@ INSTALLED_APPS = [
     'oscar.apps.stores',
     'oscar.apps.stores.dashboard',
 
-    'sslcommerz',
     'django_sslcommerz',
 
     # Third party apps that are the dependency
@@ -226,6 +226,9 @@ DJANGO_SSLCOMMERZ = {
         "base_url": "https://sandbox.sslcommerz.com",
         "store_id": "anisu5fb353437f303",
         "store_passwd": "anisu5fb353437f303@ssl",
+        # "success_url": None,
+        # "fail_url": None,
+        # "cancel_url": None,
     },
 }
 

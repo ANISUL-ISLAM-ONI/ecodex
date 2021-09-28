@@ -1,5 +1,8 @@
 import logging
 from urllib.parse import quote
+from django_sslcommerz.defaults import payment_handler
+import uuid
+from django.views.generic import RedirectView, View
 
 from django import http
 from django.conf import settings
@@ -328,6 +331,78 @@ class ShippingMethodView(CheckoutSessionMixin, generic.FormView):
 # Payment method
 # ==============
 
+class PaymentRedirectView(OrderPlacementMixin, generic.TemplateView):
+    """
+    Initiate the transaction with Paypal and redirect the user
+    to PayPal's Express Checkout to perform the transaction.
+    """
+    # permanent = False
+
+    # Setting to distinguish if the site has already collected a shipping
+    # address.  This is False when redirecting to PayPal straight from the
+    # basket page but True when redirecting from checkout.
+    # as_payment_method = False
+
+
+    def get(self, request, *args, **kwargs):
+        return payment_handler.handle_transaction(request, **self.handle_place_order_submission(request))
+
+    def handle_place_order_submission(self, request):
+        return self.submit(**self.build_submission())
+
+    def submit(self, user, basket, shipping_address, shipping_method,  # noqa (too complex (10))
+               shipping_charge, billing_address, order_total,
+               payment_kwargs=None, order_kwargs=None, surcharges=None):
+        """
+        Submit a basket for order placement.
+
+        The process runs as follows:
+
+         * Generate an order number
+         * Freeze the basket so it cannot be modified any more (important when
+           redirecting the user to another site for payment as it prevents the
+           basket being manipulated during the payment process).
+         * Attempt to take payment for the order
+           - If payment is successful, place the order
+           - If a redirect is required (e.g. PayPal, 3D Secure), redirect
+           - If payment is unsuccessful, show an appropriate error message
+
+        :basket: The basket to submit.
+        :payment_kwargs: Additional kwargs to pass to the handle_payment
+                         method. It normally makes sense to pass form
+                         instances (rather than model instances) so that the
+                         forms can be re-rendered correctly if payment fails.
+        :order_kwargs: Additional kwargs to pass to the place_order method
+        print(basket)
+        print(dir(basket.all_lines()[0].product.get_categories()))
+        print(shipping_address)
+        print(shipping_method)
+        print("The name of shipping method is ", shipping_method.name)
+        print(shipping_charge)
+        print(billing_address)
+        print(order_total)
+        """
+        # email = self.request.user.email
+        post_data = dict(
+            currency="BDT",
+            total_amount=order_total.incl_tax,
+            cus_name=shipping_address.first_name + shipping_address.last_name,
+            cus_email="dumy@gmail.com",
+            cus_add1=shipping_address.line1,
+            cus_add2=shipping_address.line2,
+            cus_city=shipping_address.line4,
+            cus_postcode=shipping_address.postcode,
+            cus_country=shipping_address.country,
+            cus_phone=shipping_address.phone_number.national_number if shipping_address.phone_number else 9999999999,
+            shipping_method="NO",
+            num_of_item=basket.all_lines()[0].quantity,
+            product_name=basket.all_lines()[0].product.get_title(),
+            product_category="c1",
+            product_profile="general",
+            tran_id = uuid.uuid4().hex[:30].upper()
+        )
+        return post_data
+
 
 class PaymentMethodView(CheckoutSessionMixin, generic.TemplateView):
     """
@@ -414,6 +489,7 @@ class PaymentDetailsView(OrderPlacementMixin, generic.TemplateView):
     def get_pre_conditions(self, request):
         if self.preview:
             # The preview view needs to ensure payment information has been
+            session_id = request.GET.get("session_id")
             # correctly captured.
             return self.pre_conditions + ['check_payment_data_is_captured']
         return super().get_pre_conditions(request)
@@ -423,6 +499,13 @@ class PaymentDetailsView(OrderPlacementMixin, generic.TemplateView):
             # Payment details should only be collected if necessary
             return ['skip_unless_payment_is_required']
         return super().get_skip_conditions(request)
+    
+    '''
+    def get(self, request, *args, **kwargs):
+        session_id = request.GET.get("session_id")
+        print(session_id)
+        return reverse_lazy('home')
+    '''
 
     def post(self, request, *args, **kwargs):
         # Posting to payment-details isn't the right thing to do.  Form
@@ -470,7 +553,8 @@ class PaymentDetailsView(OrderPlacementMixin, generic.TemplateView):
         # No form data to validate by default, so we simply render the preview
         # page.  If validating form data and it's invalid, then call the
         # render_payment_details view.
-        return self.render_preview(request)
+        return self.render_preview(request) # actual
+        # return self.render_payment_details(request)
 
     def render_preview(self, request, **kwargs):
         """
@@ -482,6 +566,7 @@ class PaymentDetailsView(OrderPlacementMixin, generic.TemplateView):
         """
         self.preview = True
         ctx = self.get_context_data(**kwargs)
+
         return self.render_to_response(ctx)
 
     def render_payment_details(self, request, **kwargs):
@@ -535,7 +620,16 @@ class PaymentDetailsView(OrderPlacementMixin, generic.TemplateView):
                          instances (rather than model instances) so that the
                          forms can be re-rendered correctly if payment fails.
         :order_kwargs: Additional kwargs to pass to the place_order method
+        print(basket)
+        print(dir(basket.all_lines()[0].product.get_categories()))
+        print(shipping_address)
+        print(shipping_method)
+        print("The name of shipping method is ", shipping_method.name)
+        print(shipping_charge)
+        print(billing_address)
+        print(order_total)
         """
+
         if payment_kwargs is None:
             payment_kwargs = {}
         if order_kwargs is None:

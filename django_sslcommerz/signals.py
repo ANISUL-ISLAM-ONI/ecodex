@@ -1,4 +1,4 @@
-import django.dispatch
+from django.dispatch import Signal
 
 
-transaction_complete_signal = django.dispatch.Signal(providing_args=["instance"])
+transaction_complete_signal = Signal(providing_args=["instance"])

@@ -25,6 +25,7 @@ class CheckoutConfig(OscarConfig):
         self.payment_method_view = get_class('checkout.views', 'PaymentMethodView')
         self.payment_details_view = get_class('checkout.views', 'PaymentDetailsView')
         self.thankyou_view = get_class('checkout.views', 'ThankYouView')
+        self.payment_redirect_view = get_class('checkout.views', 'PaymentRedirectView')
 
     def get_urls(self):
         urls = [
@@ -41,6 +42,7 @@ class CheckoutConfig(OscarConfig):
             # Payment views
             path('payment-method/', self.payment_method_view.as_view(), name='payment-method'),
             path('payment-details/', self.payment_details_view.as_view(), name='payment-details'),
+            path('payment-redirect/', self.payment_redirect_view.as_view(), name='payment-redirect'),
 
             # Preview and thankyou
             path('preview/', self.payment_details_view.as_view(preview=True), name='preview'),

@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-from sslcommerz_sdk.enums import TransactionStatus
+from .enums import TransactionStatus
 
 
 class SslcommerzSession(models.Model):

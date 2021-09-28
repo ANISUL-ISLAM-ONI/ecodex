@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, resolve_url, get_object_or_404
 from django.views.generic import TemplateView, View
+from django.urls import reverse, reverse_lazy
 
 from .defaults import app_settings, payment_handler
 from .models import SslcommerzSession, TransactionStatus
@@ -47,7 +48,8 @@ class IpnView(VerifyTransactionMixin, View):
 class SuccessView(VerifyTransactionMixin, ResultPageMixin, TemplateView):
     template_name = app_settings["success_template_name"]
     response_strategy = redirect_response_strategy_factory(
-        redirect_url=app_settings["success_url"]
+            redirect_url=app_settings["success_url"]
+            # redirect_url=reverse_lazy('checkout:preview')
     )
 
 

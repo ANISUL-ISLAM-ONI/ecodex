@@ -1,11 +1,12 @@
 from django.apps import AppConfig
 from django.conf import settings
+from django.urls import reverse_lazy
 
 DEFAULT_SETTINGS = {
     "default_store": {},
-    "success_url": None,
-    "fail_url": None,
-    "cancel_url": None,
+    "success_url": reverse_lazy('checkout:preview'),
+    "fail_url": reverse_lazy('checkout:payment-method'),
+    "cancel_url": reverse_lazy('home'),
     "success_template_name": "django_sslcommerz/common-alert.html",
     "fail_template_name": "django_sslcommerz/common-alert.html",
     "cancel_template_name": "django_sslcommerz/common-alert.html",
