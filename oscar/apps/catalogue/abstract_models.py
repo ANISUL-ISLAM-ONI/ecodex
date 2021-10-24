@@ -1,3 +1,4 @@
+from .driver import seethecontent
 import logging
 import os
 from datetime import date, datetime
@@ -538,6 +539,7 @@ class AbstractProduct(models.Model):
             self.slug = slugify(self.get_title())
         super().save(*args, **kwargs)
         self.attr.save()
+        seethecontent(self)
 
     # Properties
 
