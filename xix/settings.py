@@ -77,7 +77,7 @@ INSTALLED_APPS = [
     'oscar.apps.stores',
     'oscar.apps.stores.dashboard',
 
-    'django_sslcommerz',
+    'django_sslcommerz.apps.DjangoSslcommerzConfig',
 
     # Third party apps that are the dependency
     'widget_tweaks',

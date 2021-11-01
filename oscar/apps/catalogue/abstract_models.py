@@ -800,6 +800,11 @@ class AbstractProductRecommendation(models.Model):
         verbose_name = _('Product recommendation')
         verbose_name_plural = _('Product recomendations')
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        if(primary.recommended_products is None):
+            seethecontent(self.primary)
+
 
 class AbstractProductAttribute(models.Model):
     """
