@@ -44,7 +44,11 @@ def seethecontent(primaryproduct):
 
     X1 = vectorizer.fit_transform(df['titledescription'])
 
-    true_k = 4
+    true_k = 0
+    if(products.count() < 4):
+        true_k = products.count()
+    else:
+        true_k = 4
     model = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1)
     model.fit(X1)
     # print("Top terms per cluster:")
