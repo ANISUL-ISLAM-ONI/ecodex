@@ -4,6 +4,9 @@ $ cd ecodex
  
 ### Install dependencies
 ```sh
+$ sudo apt-get install sqlite3 libsqlite3-mod-spatialite libgdal-dev
+$ python -m venv venv
+$ source venv/bin/activate # for linux based
 $ pip install -r requirements.txt # or $ pipenv install
 ```
  
